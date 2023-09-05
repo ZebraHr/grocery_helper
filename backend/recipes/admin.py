@@ -5,8 +5,10 @@ from recipes.models import (Ingredient,
                             Recipe,
                             Favorite,
                             ShoppingCart,
+                            Follow
                             )
 from users.models import User
+
 
 class RecipeAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'text', 'author',)
@@ -19,9 +21,16 @@ class IngredientAdmin(admin.ModelAdmin):
     list_filter = ('name',)
 
 
+class UserAdmin(admin.ModelAdmin):
+    list_display = ('email', 'username', 'first_name', 'last_name',)
+    list_filter = ('email', 'username',)
+
+
+
 admin.site.register(Recipe, RecipeAdmin)
 admin.site.register(Ingredient, IngredientAdmin)
 admin.site.register(Tag)
 admin.site.register(Favorite)
 admin.site.register(ShoppingCart)
-admin.site.register(User)
+admin.site.register(User, UserAdmin)
+admin.site.register(Follow)

@@ -4,15 +4,21 @@ from django.urls import include, path
 from api.views import (IngredientViewSet,
                        TagViewSet,
                        FollowViewSet,
+                       RecipeViewSet,
+                       FavoriteViewSet
                        )
 
 app_name = 'api'
 
-v1_router = DefaultRouter()
-v1_router.register('ingredients', IngredientViewSet)
-v1_router.register('tags', TagViewSet)
-v1_router.register('follow', FollowViewSet, basename='follow')
+router = DefaultRouter()
+router.register('ingredients', IngredientViewSet)
+router.register('tags', TagViewSet)
+router.register('subscriptions', FollowViewSet, basename='subscription')
+router.register('recipes', RecipeViewSet, basename='recipe')
+router.register(
+    r'recipes/(?P<recipe_id>\d+)/favorite', FavoriteViewSet,
+    basename='favorite')
 
 urlpatterns = [
-    path('v1/', include(v1_router.urls)),
+    path('', include(router.urls)),
 ]

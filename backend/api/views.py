@@ -1,7 +1,7 @@
 from rest_framework import viewsets, status
 from django.shortcuts import get_object_or_404
 from rest_framework.viewsets import ReadOnlyModelViewSet
-from rest_framework.permissions import (AllowAny,
+from rest_framework.permissions import (IsAuthenticatedOrReadOnly,
                                         IsAuthenticated)
 from rest_framework import filters
 from rest_framework import mixins
@@ -43,7 +43,13 @@ class TagViewSet(ReadOnlyModelViewSet):
     permission_classes = [IsAmdinOrReadOnly]
 
 
+class RecipeViewSet(viewsets.ModelViewSet):
+    serializer_class = RecipeSerializer
+    queryset = Recipe.objects.all()
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user)
 
 
 class FollowViewSet(mixins.CreateModelMixin,
@@ -54,18 +60,17 @@ class FollowViewSet(mixins.CreateModelMixin,
        Просмотр, подписка на пользователя,
        удаление подписки."""
     serializer_class = FollowSerializer
-    permission_classes = [IsAuthenticated, IsOwnerOrReadOnly]
+    # permission_classes = [IsAuthenticated, IsOwnerOrReadOnly]
     filter_backends = (filters.SearchFilter, )
     search_fields = ('user__username', 'following__username')
 
     def get_queryset(self):
         return self.request.user.follower.all()
 
-    def perform_create(self, username):
+    def perform_create(self, username, serializer):
         author = get_object_or_404(User, username=username)
         if author != self.request.user:
-            return Follow.objects.get_or_create(user=self.request.user,
-                                                author=author)
+            return serializer.save(user=self.request.user)
         return Response('На себя подписка невозможна!',
                         status=status.HTTP_400_BAD_REQUEST)
 
@@ -88,17 +93,20 @@ class FavoriteViewSet(mixins.CreateModelMixin,
         user = self.request.user
         return Favorite.objects.filter(user=user)
 
-    def perform_create(self):
-        user = self.request.user
-        fav_recipe = get_object_or_404(
-            Recipe, pk=id)
-        if Favorite.objects.filter(
-                user=user,
-                recipe=fav_recipe).exists():
-            return Response('Рецепт уже в избранном!',
-                            status=status.HTTP_400_BAD_REQUEST)
-        else:
-            Favorite.objects.create(user=user, recipe=fav_recipe)
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+    # def perform_create(self):
+    #     user = self.request.user
+    #     fav_recipe = get_object_or_404(
+    #         Recipe, pk=id)
+    #     if Favorite.objects.filter(
+    #             user=user,
+    #             recipe=fav_recipe).exists():
+    #         return Response('Рецепт уже в избранном!',
+    #                         status=status.HTTP_400_BAD_REQUEST)
+    #     else:
+    #         Favorite.objects.create(user=user, recipe=fav_recipe)
 
     def delete(self):
         user = self.request.user

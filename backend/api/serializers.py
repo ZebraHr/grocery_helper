@@ -27,8 +27,6 @@ class Base64ImageField(serializers.ImageField):
 
 class UserSerializer(serializers.ModelSerializer):
 
-    ...
-
     class Meta:
         fields = ''
         model = User
@@ -49,8 +47,8 @@ class TagSerializer(serializers.ModelSerializer):
 
 
 class RecipeSerializer(serializers.ModelSerializer):
-
-    ...
+    image = Base64ImageField(required=False, allow_null=True)
+    author = SlugRelatedField(slug_field='username', read_only=True)
 
     class Meta:
         fields = '__all__'
@@ -59,16 +57,12 @@ class RecipeSerializer(serializers.ModelSerializer):
 
 class FavoriteSerializer(serializers.ModelSerializer):
 
-    ...
-
     class Meta:
         fields = '__all__'
         model = Favorite
 
 
 class ShoppingCartSerializer(serializers.ModelSerializer):
-
-    ...
 
     class Meta:
         fields = '__all__'
