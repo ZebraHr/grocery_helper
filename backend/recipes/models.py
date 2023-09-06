@@ -23,8 +23,10 @@ class Ingredient(models.Model):
 
 class Tag(models.Model):
     """Модель тега."""
-    name = models.CharField(max_length=150, verbose_name='Название тега')
-    color = models.CharField(max_length=10, verbose_name='Цветовой код')
+    name = models.CharField(max_length=150, unique=True,
+                            verbose_name='Название тега')
+    color = models.CharField(max_length=10, unique=True,
+                             verbose_name='Цветовой код')
     slug = models.SlugField(unique=True, verbose_name='Слаг')
 
     class Meta:

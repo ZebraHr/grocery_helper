@@ -75,24 +75,24 @@ class FollowSerializer(serializers.ModelSerializer):
         read_only=True,
         default=serializers.CurrentUserDefault()
     )
-    following = serializers.SlugRelatedField(
+    author = serializers.SlugRelatedField(
         slug_field='username',
         queryset=User.objects.all()
     )
 
     class Meta:
-        fields = ('user', 'following', )
+        fields = ('user', 'author', )
         model = Follow
-        read_only_fields = ('owner',)
+ #       read_only_fields = ('owner',)
         validators = [
             UniqueTogetherValidator(
                 queryset=Follow.objects.all(),
-                fields=('user', 'following')
+                fields=('user', 'author')
             )
         ]
 
     def validate(self, data):
-        if self.context['request'].user == data['following']:
+        if self.context['request'].user == data['author']:
             raise serializers.ValidationError(
                 'Подписка на самого себя невозможна!'
             )

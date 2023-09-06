@@ -60,26 +60,31 @@ class FollowViewSet(mixins.CreateModelMixin,
        Просмотр, подписка на пользователя,
        удаление подписки."""
     serializer_class = FollowSerializer
-    # permission_classes = [IsAuthenticated, IsOwnerOrReadOnly]
+    permission_classes = [IsAuthenticated, IsOwnerOrReadOnly]
     filter_backends = (filters.SearchFilter, )
     search_fields = ('user__username', 'following__username')
 
     def get_queryset(self):
         return self.request.user.follower.all()
+    
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
 
-    def perform_create(self, username, serializer):
-        author = get_object_or_404(User, username=username)
-        if author != self.request.user:
-            return serializer.save(user=self.request.user)
-        return Response('На себя подписка невозможна!',
-                        status=status.HTTP_400_BAD_REQUEST)
+    def delete(self, serializer):
+        serializer.delete(user=self.request.user)
 
-    def delete(self, username):
-        author = get_object_or_404(User, username=username)
-        follower = Follow.objects.filter(user=self.request.user,
-                                         author=author)
-        if follower.exists():
-            return follower.delete()
+        # author = get_object_or_404(User, username=username)
+        # if author != self.request.user:
+        #     return serializer.save(user=self.request.user)
+        # return Response('На себя подписка невозможна!',
+        #                 status=status.HTTP_400_BAD_REQUEST)
+
+    # def delete(self, username):
+    #     author = get_object_or_404(User, username=username)
+    #     follower = Follow.objects.filter(user=self.request.user,
+    #                                      author=author)
+    #     if follower.exists():
+    #         return follower.delete()
 
 
 class FavoriteViewSet(mixins.CreateModelMixin,
