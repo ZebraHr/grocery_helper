@@ -93,12 +93,12 @@ class RecipeIngredient(models.Model):
     Для реализаци связи М2М между моделями Recipe
     и Ingredient.
     """
-    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
-    ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE)
+    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE,
+                               related_name='recipe_in_ingr')
+    ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE,
+                                   related_name='ingr_in_recipes')
     amount = models.PositiveSmallIntegerField(
         'Количество',
-        #   validators=[MinValueValidator(1,
-        #  message='Минимальное количество 1!')]
     )
 
     class Meta:
@@ -114,8 +114,10 @@ class RecipeTag(models.Model):
     Для реализаци связи М2М между моделями Recipe
     и Tag.
     """
-    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
-    tag = models.ForeignKey(Tag, on_delete=models.CASCADE)
+    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE,
+                               related_name='recipe_in_tags')
+    tag = models.ForeignKey(Tag, on_delete=models.CASCADE,
+                            related_name='tag_in_recipes')
 
     class Meta:
         ordering = ['recipe']
@@ -135,7 +137,7 @@ class Favorite(models.Model):
     recipe = models.ForeignKey(
         Recipe,
         on_delete=models.CASCADE,
-        related_name='favorites',
+        related_name='favorites_recipes',
         verbose_name='Рецепт',
     )
 
@@ -172,21 +174,39 @@ class ShoppingCart(models.Model):
         return f'Рецепт {self.recipe} в списке покупок у {self.user}'
 
 
-class Follow(models.Model):
+class Subscribe(models.Model):
     """Модель подписки."""
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        related_name='follower',
+        related_name='subscriber',
         verbose_name='Подписчик'
     )
     author = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        related_name='following',
+        related_name='subscribing',
         verbose_name='Автор'
     )
 
     class Meta:
         models.UniqueConstraint(fields=['user', 'author'],
                                 name='unique_ff')
+
+
+class IngredientAmount(models.Model):
+    recipe = models.ForeignKey(
+        Recipe,
+        on_delete=models.CASCADE,
+        related_name='recipe',
+    )
+    ingredient = models.ForeignKey(
+        Ingredient,
+        on_delete=models.CASCADE,
+        related_name='ingredient',
+    )
+    amount = models.PositiveIntegerField(
+        'Количество',
+        default=1,
+        # validators=(MinValueValidator(1, 'Минимум 1'),),
+    )

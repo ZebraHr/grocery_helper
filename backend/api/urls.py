@@ -3,9 +3,9 @@ from django.urls import include, path
 
 from api.views import (IngredientViewSet,
                        TagViewSet,
-                       FollowViewSet,
+                       SubscribeViewSet,
                        RecipeViewSet,
-                       FavoriteViewSet
+                    #    FavoriteViewSet
                        )
 
 app_name = 'api'
@@ -13,14 +13,15 @@ app_name = 'api'
 router = DefaultRouter()
 router.register('ingredients', IngredientViewSet)
 router.register('tags', TagViewSet)
-router.register('subscriptions', FollowViewSet, basename='subscription')
+# router.register('subscriptions', FollowViewSet, basename='subscription')
 router.register('recipes', RecipeViewSet, basename='recipe')
-router.register(
-    r'recipes/(?P<recipe_id>\d+)/favorite', FavoriteViewSet,
-    basename='favorite')
+# router.register(
+#     r'recipes/(?P<recipe_id>\d+)/favorite', FavoriteViewSet,
+#     basename='favorite')
+
 
 urlpatterns = [
     path('', include(router.urls)),
-    path('auth/', include('djoser.urls')),
+    path('', include('djoser.urls')),
     path('auth/', include('djoser.urls.authtoken')),
 ]
