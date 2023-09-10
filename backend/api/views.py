@@ -17,10 +17,10 @@ from api.serializers import (UserCreateSerializer,
                              IngredientSerializer,
                              TagSerializer,
                              RecipeCreateSerializer,
-                            #  FavoriteSerializer,
                              ShoppingCartSerializer,
-                             FollowSerializer,
-                             RecipeReadSerializer
+                             RecipeReadSerializer,
+                             SubscribeSerializer,
+                             SubscriptionsSerializer,
                              )
 from recipes.models import (Ingredient,
                             Tag,
@@ -42,6 +42,56 @@ class CustomUserViewSet(UserViewSet):
         if self.action == 'create':
             return UserCreateSerializer
         return UserReadSerializer
+
+    @action(
+        detail=True,
+        methods=['post', 'delete'],
+        permission_classes=[IsAuthenticated, ],
+        url_path='subscribe'
+    )
+    def subscribe(self, request, id=None):
+        user = self.request.user
+        author = get_object_or_404(User, pk=id)
+        if request.method == 'POST':
+            if user == author:
+                return Response({'errors': 'На себя подписаться нельзя!'},
+                                status=status.HTTP_400_BAD_REQUEST)
+            if Subscribe.objects.filter(user=user,
+                                        author=author).exists():
+                return Response({'errors': 'Вы уже подписаны на этого пользователя!'},
+                                status=status.HTTP_400_BAD_REQUEST)
+
+            Subscribe.objects.create(user=user, author=author)
+            serializer = SubscribeSerializer(author,
+                                             context={'request': request}
+                                             )
+          
+            return Response(serializer.data,
+                            status=status.HTTP_201_CREATED)
+
+        if request.method == 'DELETE':
+            subscription = Subscribe.objects.filter(user=user, author=author)
+            if subscription.exists():
+                subscription.delete()
+                return Response(
+                    {'message': 'Вы больше не подписаны на пользователя'},
+                    status=status.HTTP_204_NO_CONTENT)
+            return Response(
+                {'errors': 'Вы не подписаны на этого пользователя!'},
+                status=status.HTTP_400_BAD_REQUEST)
+
+    # @action(
+    #     detail=True,
+    #     permission_classes=[IsAuthenticated, ]
+    # )
+    # def subscriptions(self, request):
+    #     user = request.user
+    #     queryset = User.objects.filter(subscribing__user=user)
+    #     pages = self.paginate_queryset(queryset)
+    #     serializer = SubscriptionsSerializer(pages,
+    #                                      many=True,
+    #                                      context={'request': request})
+    #     return self.get_paginated_response(serializer.data)
 
 
 class IngredientViewSet(ReadOnlyModelViewSet):
@@ -73,7 +123,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         if self.request.method in SAFE_METHODS:
             return RecipeReadSerializer
         return RecipeCreateSerializer
-    
+
     @action(
         detail=True,
         methods=['post', 'delete'],
@@ -87,49 +137,16 @@ class RecipeViewSet(viewsets.ModelViewSet):
                                 status=status.HTTP_400_BAD_REQUEST)
             recipe = get_object_or_404(Recipe, id=pk)
             Favorite.objects.create(user=request.user, recipe=recipe)
-            serializer = RecipeReadSerializer(recipe)
+            serializer = RecipeReadSerializer(recipe,
+                                              context={'request': request})
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        else:
+        if request.method == 'DELETE':
             fav_rec = Favorite.objects.filter(user=request.user, recipe__id=pk)
             if fav_rec.exists():
                 fav_rec.delete()
                 return Response(
-                    {'message': 'Рецепт удален из избранного!'},
+                    {'message': 'Рецепт удален из избранного'},
                     status=status.HTTP_204_NO_CONTENT)
             return Response(
                 {'errors': 'Рецепт уже удален!'},
                 status=status.HTTP_400_BAD_REQUEST)
-
-
-class SubscribeViewSet(mixins.CreateModelMixin,
-                       mixins.ListModelMixin,
-                       mixins.DestroyModelMixin,
-                       viewsets.GenericViewSet):
-    """Вьюсет для подписок.
-       Просмотр, подписка на пользователя,
-       удаление подписки."""
-    serializer_class = FollowSerializer
-    permission_classes = [IsAuthenticated, IsOwnerOrReadOnly]
-    filter_backends = (filters.SearchFilter, )
-    search_fields = ('user__username', 'subscribing__username')
-
-    def get_queryset(self):
-        return self.request.user.subscriber.all()
-    
-    def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
-
-    # def destroy(self, serializer):
-    #     author = get_object_or_404(User, username=username)
-    #     if author != self.request.user:
-    #         return serializer.save(user=self.request.user)
-    #     return Response('На себя подписка невозможна!',
-    #                     status=status.HTTP_400_BAD_REQUEST)
-
-    # # def delete(self, username):
-    # #     author = get_object_or_404(User, username=username)
-    # #     follower = Follow.objects.filter(user=self.request.user,
-    # #                                      author=author)
-    # #     if follower.exists():
-    # #         return follower.delete()
-                                                                                                                                                
