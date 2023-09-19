@@ -1,3 +1,4 @@
+from import_export.admin import ImportExportActionModelAdmin
 from django.contrib import admin
 
 from recipes.models import (Ingredient,
@@ -6,9 +7,21 @@ from recipes.models import (Ingredient,
                             Favorite,
                             ShoppingCart,
                             Subscribe,
-                            IngredientAmount
+                            IngredientAmount,
                             )
 from users.models import User
+
+
+@admin.register(Ingredient)
+class RecipeIngredientAdmin(ImportExportActionModelAdmin):
+    list_display = ('name', 'measurement_unit')
+    list_filter = ('name',)
+    search_fields = ('name',)
+
+
+@admin.register(Tag)
+class RecipeTagAdmin(ImportExportActionModelAdmin):
+    list_filter = ('name',)
 
 
 class IngredientAmountAdmin(admin.TabularInline):
@@ -23,10 +36,10 @@ class RecipeAdmin(admin.ModelAdmin):
     empty_value_display = '-пусто-'
 
 
-class IngredientAdmin(admin.ModelAdmin):
-    list_display = ('name', 'measurement_unit',)
-    list_filter = ('name',)
-    search_fields = ('name',)
+# class IngredientAdmin(admin.ModelAdmin):
+#     list_display = ('name', 'measurement_unit',)
+#     list_filter = ('name',)
+#     search_fields = ('name',)
 
 
 class UserAdmin(admin.ModelAdmin):
@@ -35,8 +48,8 @@ class UserAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Recipe, RecipeAdmin)
-admin.site.register(Ingredient, IngredientAdmin)
-admin.site.register(Tag)
+# admin.site.register(Ingredient, IngredientAdmin)
+# admin.site.register(Tag)
 admin.site.register(Favorite)
 admin.site.register(ShoppingCart)
 admin.site.register(User, UserAdmin)

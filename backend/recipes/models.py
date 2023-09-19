@@ -16,6 +16,7 @@ class Ingredient(models.Model):
         verbose_name = 'Ингредиент'
         verbose_name_plural = 'Ингредиенты'
         ordering = ['name']
+        db_table = 'recipes_ingredient'
 
     def __str__(self):
         return f'{self.name}, {self.measurement_unit}'
@@ -33,6 +34,7 @@ class Tag(models.Model):
         ordering = ['name']
         verbose_name = 'Тег'
         verbose_name_plural = 'Теги'
+        db_table = 'recipes_tag'
 
     def __str__(self):
         return self.name
@@ -190,6 +192,7 @@ class Subscribe(models.Model):
     )
 
     class Meta:
+        ordering = ['author']
         models.UniqueConstraint(fields=['user', 'author'],
                                 name='unique_ff')
 

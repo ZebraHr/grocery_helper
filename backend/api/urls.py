@@ -13,7 +13,6 @@ router = DefaultRouter()
 router.register('users', CustomUserViewSet, basename='users')
 router.register('ingredients', IngredientViewSet)
 router.register('tags', TagViewSet)
-# router.register('subscriptions', FollowViewSet, basename='subscription')
 router.register('recipes', RecipeViewSet, basename='recipe')
 
 
