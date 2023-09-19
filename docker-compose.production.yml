@@ -13,7 +13,7 @@ services:
       - fg_data:/var/lib/postgresql/fg_data
   backend:
     image: zebrahr/foodgram_backend
-    # restart: always   
+    restart: always   
     env_file: .env
     depends_on:
       - db
