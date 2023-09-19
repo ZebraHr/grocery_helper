@@ -33,8 +33,7 @@ from recipes.models import (Ingredient,
                             Subscribe,
                             IngredientAmount)
 from users.models import User
-from api.permissions import (
-                             IsAmdinOrReadOnly)
+from api.permissions import IsAmdinOrReadOnly
 from api.paginations import RecipePagination
 from api.filters import RecipeFilter, IngredientFilter
 
