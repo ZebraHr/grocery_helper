@@ -4,9 +4,9 @@ import webcolors
 from django.core.files.base import ContentFile
 from djoser.serializers import (UserCreateSerializer,
                                 UserSerializer)
-from rest_framework import serializers, exceptions
+from rest_framework import serializers
 from rest_framework.relations import SlugRelatedField
-from rest_framework.fields import IntegerField
+# from rest_framework.fields import IntegerField
 # from rest_framework.exceptions import ValidationError
 
 from recipes.models import (Ingredient,
@@ -183,7 +183,8 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
 #                 'Добавьте ингредиент.'
 #             )
 
-#         ingredients = [item['id'] for item in value]  # посмотреть и переписать
+#         ingredients = [item['id'] for item in value]
+# # посмотреть и переписать
 #         for ingredient in ingredients:
 #             if ingredients.count(ingredient) > 1:
 #                 raise exceptions.ValidationError(
