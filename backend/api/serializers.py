@@ -124,7 +124,7 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
                   'image', 'name', 'text',
                   'cooking_time', 'author')
 
-    def create_ingredients_amount(self, ingredients, recipe):
+    def create_ingredients(self, ingredients, recipe):
         IngredientAmount.objects.bulk_create([
             IngredientAmount(
                 ingredient=ingredient.get('id'),
@@ -139,7 +139,7 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
         ingredients = validated_data.pop('ingredients')
         recipe = Recipe.objects.create(**validated_data)
         recipe.tags.set(tags)
-        self.create_ingredients_amount(ingredients, recipe)
+        self.create_ingredients(ingredients, recipe)
         return recipe
 
     def update(self, instance, validated_data):
@@ -157,7 +157,7 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
         instance.tags.set(tags)
         ingredients = validated_data.get('ingredients')
         IngredientAmount.objects.filter(recipe=recipe).delete()
-        self.create_ingredients_amount(ingredients, recipe)
+        self.create_ingredients(ingredients, recipe)
         instance.save()
         return instance
 
@@ -165,47 +165,6 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
         return RecipeReadSerializer(instance, context={
             'request': self.context.get('request')
         }).data
-
-
-# class RecipeCreateSerializer(serializers.ModelSerializer):
-#     image = Base64ImageField(required=False, allow_null=True)
-#     author = SlugRelatedField(slug_field='username', read_only=True)
-#     ingredients = IngredientInRecipeWriteSerializer(many=True)  # !
-#     tags = serializers.PrimaryKeyRelatedField(
-#         queryset=Tag.objects.all(),
-#         many=True
-#     )
-#     cooking_time = serializers.IntegerField()
-
-#     def validate_ingredients(self, value):
-#         if not value:
-#             raise exceptions.ValidationError(
-#                 'Добавьте ингредиент.'
-#             )
-
-#         ingredients = [item['id'] for item in value]
-# # посмотреть и переписать
-#         for ingredient in ingredients:
-#             if ingredients.count(ingredient) > 1:
-#                 raise exceptions.ValidationError(
-#                     'Такой ингредиент уже добавлен.'
-#                 )
-
-#         return value
-
-#     def create(self, validated_data):
-#         ...
-
-#     class Meta:
-#         model = Recipe
-#         exclude = ('pub_date',)
-
-
-class ShoppingCartSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        fields = '__all__'
-        model = ShoppingCart
 
 
 class Hex2NameColor(serializers.Field):
