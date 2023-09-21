@@ -20,7 +20,6 @@ services:
     volumes:
       - static_fg:/backend_static
       - media_fg:/app/media
-      # - ./backend/foodgram:/app/foodgram
   frontend:
     image: zebrahr/foodgram_frontend
     volumes:
