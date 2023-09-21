@@ -4,7 +4,7 @@ from users.models import User
 
 
 class IngredientFilter(FilterSet):
-    """Фильтрация ингридиентов"""
+    """Фильтрация ингредиентов по названию."""
 
     name = filters.CharFilter(
         field_name='name',

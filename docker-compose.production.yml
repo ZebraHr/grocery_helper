@@ -10,7 +10,7 @@ services:
     image: postgres:13
     env_file: .env
     volumes:
-      - fg_data:/var/lib/postgresql/fg_data
+      - fg_data:/var/lib/postgresql/data
   backend:
     image: zebrahr/foodgram_backend
     restart: always   
@@ -40,4 +40,5 @@ services:
       - media_fg:/app/media/
     depends_on:
       - backend
+      - frontend
  
