@@ -5,7 +5,7 @@ from rest_framework.permissions import (IsAuthenticatedOrReadOnly,
                                         IsAuthenticated,
                                         AllowAny,
                                         SAFE_METHODS)
-from rest_framework.filters import SearchFilter
+# from rest_framework.filters import SearchFilter
 from rest_framework.response import Response
 from djoser.views import UserViewSet
 from rest_framework.decorators import action
