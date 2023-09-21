@@ -5,7 +5,6 @@ volumes:
   static_fg:
   media_fg:
 
-
 services:
   db:
     image: postgres:13
