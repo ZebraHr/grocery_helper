@@ -5,7 +5,7 @@ from rest_framework.permissions import (IsAuthenticatedOrReadOnly,
                                         IsAuthenticated,
                                         AllowAny,
                                         SAFE_METHODS)
-# from rest_framework.filters import SearchFilter
+from rest_framework.filters import SearchFilter
 from rest_framework.response import Response
 from djoser.views import UserViewSet
 from rest_framework.decorators import action
@@ -105,9 +105,9 @@ class IngredientViewSet(ReadOnlyModelViewSet):
     queryset = Ingredient.objects.all()
     permission_classes = [IsAmdinOrReadOnly]
     serializer_class = IngredientSerializer
-    # filter_backends = (SearchFilter,)
+    filter_backends = (SearchFilter,)
     filterset_class = IngredientFilter
-    # search_fields = ('^name',)
+    search_fields = ('^name',)
 
 
 class TagViewSet(ReadOnlyModelViewSet):
