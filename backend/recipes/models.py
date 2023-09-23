@@ -71,7 +71,9 @@ class Recipe(models.Model):
     )
     cooking_time = models.PositiveSmallIntegerField(
         verbose_name='Время приготовления',
-        validators=[validators.MinValueValidator(1)])
+        default=1,
+        validators=[validators.MinValueValidator(1)]
+        )
     pub_date = models.DateTimeField(
         verbose_name='Дата публикации',
         auto_now_add=True
@@ -98,6 +100,7 @@ class RecipeIngredient(models.Model):
                                    related_name='ingr_in_recipes')
     amount = models.PositiveSmallIntegerField(
         'Количество',
+        default=1,
         validators=[validators.MinValueValidator(1)]
     )
 
@@ -213,5 +216,6 @@ class IngredientAmount(models.Model):
     )
     amount = models.PositiveIntegerField(
         'Количество',
+        default=1,
         validators=[validators.MinValueValidator(1)]
     )
