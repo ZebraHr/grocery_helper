@@ -11,9 +11,9 @@ class IngredientFilter(FilterSet):
         fields = ('name',)
 
 
-IN_NOT_IN_LIST = (
-    (0, 'Not_In_List'),
-    (1, 'In_List'),
+IN_NOT_IN = (
+    (0, 'Not_In'),
+    (1, 'In'),
 )
 
 
@@ -24,10 +24,10 @@ class RecipeFilter(FilterSet):
         queryset=User.objects.all()
     )
     is_in_shopping_cart = filters.ChoiceFilter(
-        choices=IN_NOT_IN_LIST, method='get_is_in'
+        choices=IN_NOT_IN, method='get_is_in'
     )
     is_favorited = filters.ChoiceFilter(
-        choices=IN_NOT_IN_LIST,
+        choices=IN_NOT_IN,
         method='get_is_in'
     )
     tags = filters.AllValuesMultipleFilter(

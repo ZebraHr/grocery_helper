@@ -6,8 +6,6 @@ from djoser.serializers import (UserCreateSerializer,
                                 UserSerializer)
 from rest_framework import serializers
 from rest_framework.relations import SlugRelatedField
-# from rest_framework.fields import IntegerField
-# from rest_framework.exceptions import ValidationError
 
 from recipes.models import (Ingredient,
                             Tag,
@@ -19,7 +17,9 @@ from recipes.models import (Ingredient,
 from users.models import User
 
 
-class Base64ImageField(serializers.ImageField):
+class Base64ImageFieldSerializer(serializers.ImageField):
+    """Сериализатор для декодирования картинки.
+       Декодирует строку base64."""
     def to_internal_value(self, data):
         if isinstance(data, str) and data.startswith('data:image'):
             format, imgstr = data.split(';base64,')
@@ -92,6 +92,7 @@ class TagSerializer(serializers.ModelSerializer):
 
 
 class IngredientInRecipeWriteSerializer(serializers.ModelSerializer):
+    """Сериализатор для игредиентов в рецепте."""
     id = serializers.PrimaryKeyRelatedField(queryset=Ingredient.objects.all())
 
     class Meta:
@@ -101,7 +102,7 @@ class IngredientInRecipeWriteSerializer(serializers.ModelSerializer):
 
 class RecipeCreateSerializer(serializers.ModelSerializer):
     """Серилизатор для создания рецепта."""
-    image = Base64ImageField(
+    image = Base64ImageFieldSerializer(
         required=False,
         allow_null=True
     )
@@ -168,6 +169,7 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
 
 
 class Hex2NameColor(serializers.Field):
+    """Сериализатор для добавления цветов через HEX."""
     def to_representation(self, value):
         return value
 
@@ -210,7 +212,7 @@ class RecipeReadSerializer(serializers.ModelSerializer):
 
     def get_is_in_shopping_cart(self, obj):
         request = self.context.get('request')
-        if not request or request.user.is_anonymous:
+        if request.user.is_anonymous:
             return False
         return ShoppingCart.objects.filter(recipe=obj,
                                            user=request.user).exists()
@@ -259,7 +261,7 @@ class SubscribeSerializer(serializers.ModelSerializer):
 
 
 class RecipeShortSerializer(serializers.ModelSerializer):
-    image = Base64ImageField()
+    image = Base64ImageFieldSerializer()
 
     class Meta:
         model = Recipe

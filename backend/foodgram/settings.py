@@ -164,8 +164,6 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.TokenAuthentication',
     ),
     'SEARCH_PARAM': 'name',
-    # 'DEFAULT_PAGINATION_CLASS': 'api.paginations.RecipePagination',
-    # 'PAGE_SIZE': 6,
 }
 
 DJOSER = {
@@ -174,10 +172,16 @@ DJOSER = {
         'user': 'api.serializers.UserReadSerializer',
         'current_user': 'api.serializers.UserReadSerializer',
     },
-
-    # 'PERMISSIONS': {
-    #     'user': ['djoser.permissions.CurrentUserOrAdminOrReadOnly'],
-    #     'user_list': ['rest_framework.permissions.IsAuthenticatedOrReadOnly'],
-    # },
     'HIDE_USERS': False,
 }
+
+
+# download_shopping_cart
+
+HEAD_FONT_SIZE = 18
+TEXT_FONT_SIZE = 14
+HEAD_HEIGHT = 800
+HEAD_INDENT = 200
+TEXT_HEIGHT = 750
+TEXT_INDENT = 50
+LINE_SPACE = 20

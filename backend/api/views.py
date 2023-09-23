@@ -3,7 +3,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework.viewsets import ReadOnlyModelViewSet
 from rest_framework.permissions import (IsAuthenticatedOrReadOnly,
                                         IsAuthenticated,
-                                        AllowAny,
+                                        # AllowAny,
                                         SAFE_METHODS)
 from rest_framework.filters import SearchFilter
 from rest_framework.response import Response
@@ -15,6 +15,7 @@ from django.http import FileResponse
 from reportlab.pdfgen import canvas
 from reportlab.pdfbase import pdfmetrics, ttfonts
 from django.db.models import Sum
+from django.conf import settings
 
 from api.serializers import (UserCreateSerializer,
                              UserReadSerializer,
@@ -33,7 +34,7 @@ from recipes.models import (Ingredient,
                             Subscribe,
                             IngredientAmount)
 from users.models import User
-from api.permissions import IsAmdinOrReadOnly
+from api.permissions import IsAmdinOrReadOnly, IsOwnerOrReadOnly
 from api.paginations import RecipePagination
 from api.filters import RecipeFilter, IngredientFilter
 
@@ -121,7 +122,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
     """Вьюсет рецепта.
        Просмотр, создание, редактирование."""
     queryset = Recipe.objects.all()
-    permission_classes = [AllowAny]
+    permission_classes = [IsOwnerOrReadOnly | IsAmdinOrReadOnly]
     pagination_class = RecipePagination
     filter_backends = (DjangoFilterBackend,)
     filterset_class = RecipeFilter
@@ -207,15 +208,15 @@ class RecipeViewSet(viewsets.ModelViewSet):
                           f' - {i["amount"]}'
                           for i in ingredients])
         text = canvas.Canvas(buffer)
-        font = ttfonts.TTFont('Times-Roman', './docs/font.ttf')
+        font = ttfonts.TTFont('Arial', './docs/arialfont.ttf')
         pdfmetrics.registerFont(font)
-        text.setFont('Times-Roman', 20)
-        text.drawString(200, 750, 'Список покупок')
-        text.setFont('Times-Roman', 14)
-        height = 700
+        text.setFont('Arial', settings.HEAD_FONT_SIZE)
+        text.drawString(settings.HEAD_INDENT, settings.HEAD_HEIGHT,
+                        'Ваш список покупок:')
+        text.setFont('Arial', settings.TEXT_FONT_SIZE)
         for line in shopping_list:
-            text.drawString(50, height, line)
-            height -= 25
+            text.drawString(settings.TEXT_INDENT, settings.TEXT_HEIGHT, line)
+            settings.TEXT_HEIGHT -= settings.LINE_SPACE
         text.showPage()
         text.save()
         buffer.seek(0)

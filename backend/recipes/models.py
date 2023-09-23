@@ -1,5 +1,5 @@
 from django.db import models
-# from django.core.validators import MinValueValidator
+from django.core import validators
 
 from users.models import User
 
@@ -10,7 +10,6 @@ class Ingredient(models.Model):
                             verbose_name='Название ингредиента')
     measurement_unit = models.CharField(max_length=150,
                                         verbose_name='Единица измерения')
-    # добавить выпадающий список
 
     class Meta:
         verbose_name = 'Ингредиент'
@@ -72,9 +71,8 @@ class Recipe(models.Model):
     )
     cooking_time = models.PositiveSmallIntegerField(
         verbose_name='Время приготовления',
-        default=1,
-        #   validators=(MinValueValidator(1, 'Минимум 1 минута')),
-    )
+        validators=[validators.MinValueValidator(1)]
+        )
     pub_date = models.DateTimeField(
         verbose_name='Дата публикации',
         auto_now_add=True
@@ -101,13 +99,14 @@ class RecipeIngredient(models.Model):
                                    related_name='ingr_in_recipes')
     amount = models.PositiveSmallIntegerField(
         'Количество',
+        validators=[validators.MinValueValidator(1)]
     )
 
     class Meta:
         ordering = ['recipe']
 
     def __str__(self):
-        return f'{self.recipe} {self.ingredient}'
+        return f'В {self.recipe} есть {self.ingredient}'
 
 
 class RecipeTag(models.Model):
@@ -125,7 +124,7 @@ class RecipeTag(models.Model):
         ordering = ['recipe']
 
     def __str__(self):
-        return f'{self.recipe} {self.tag}'
+        return f'Рецепт {self.recipe} отмечен тегом {self.tag}'
 
 
 class Favorite(models.Model):
@@ -147,6 +146,8 @@ class Favorite(models.Model):
         ordering = ['recipe']
         verbose_name = 'Избранное'
         verbose_name_plural = 'Избранное'
+        models.UniqueConstraint(fields=['user', 'recipe'],
+                                name='unique_u_f')
 
     def __str__(self):
         return f'Рецепт {self.recipe} в избранном у {self.user}'
@@ -171,6 +172,8 @@ class ShoppingCart(models.Model):
         ordering = ['recipe']
         verbose_name = 'Список покупок'
         verbose_name_plural = 'Списки покупок'
+        models.UniqueConstraint(fields=['user', 'recipe'],
+                                name='unique_s_l')
 
     def __str__(self):
         return f'Рецепт {self.recipe} в списке покупок у {self.user}'
@@ -194,10 +197,11 @@ class Subscribe(models.Model):
     class Meta:
         ordering = ['author']
         models.UniqueConstraint(fields=['user', 'author'],
-                                name='unique_ff')
+                                name='unique_ua')
 
 
 class IngredientAmount(models.Model):
+    """Модель вывода количества ингредиенто в рецепте."""
     recipe = models.ForeignKey(
         Recipe,
         on_delete=models.CASCADE,
@@ -210,6 +214,5 @@ class IngredientAmount(models.Model):
     )
     amount = models.PositiveIntegerField(
         'Количество',
-        default=1,
-        # validators=(MinValueValidator(1, 'Минимум 1'),),
+        validators=[validators.MinValueValidator(1)]
     )
