@@ -2,6 +2,14 @@
 # Foodgram
 Проект "Продуктовый помошник" (Foodgram) — сайт с рецептами.
 
+## Для проверки:
+
+https://foodgramzebra.zapto.org/
+Суперпользователь:
+zebra9999@rambler.ru
+prazdnik9999
+
+
 ## Технологии:
 Python 3.9
 Django 3.2.3
