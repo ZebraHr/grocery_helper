@@ -12,15 +12,15 @@ class User(AbstractUser):
     username = models.CharField(
         max_length=40,
         verbose_name='Имя пользователя'
-        )
+    )
     first_name = models.CharField(
         max_length=40,
         verbose_name='Имя'
-        )
+    )
     last_name = models.CharField(
         max_length=40,
         verbose_name='Фамилия'
-        )
+    )
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = [
