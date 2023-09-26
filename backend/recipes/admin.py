@@ -36,6 +36,7 @@ class TagInRecipeAdmin(admin.TabularInline):
 class IngredientAmountAdmin(admin.TabularInline):
     model = IngredientAmount
     autocomplete_fields = ('ingredient', )
+    min_num = 1
 
 
 class RecipeAdmin(admin.ModelAdmin):
