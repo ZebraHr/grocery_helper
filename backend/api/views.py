@@ -198,7 +198,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
                 amount=Sum('amount'))
         shopping_list = ([f'{i["ingredient__name"]}'
                           f' - {i["amount"]}'
-                          f' ({i["ingredient__measurement_unit"]}'
+                          f' {i["ingredient__measurement_unit"]}'
                           for i in ingredients])
         text = canvas.Canvas(buffer)
         font = ttfonts.TTFont('Arial', './docs/arialfont.ttf')

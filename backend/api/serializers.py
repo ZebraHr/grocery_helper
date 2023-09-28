@@ -121,7 +121,6 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
         many=True
     )
     cooking_time = serializers.IntegerField(
-        read_only=True,
         min_value=settings.MIN_VALUE,
         max_value=settings.MAX_VALUE)
 
