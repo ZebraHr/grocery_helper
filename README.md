@@ -5,12 +5,12 @@
 ## Для проверки:
 
 ## Технологии:
-Python 3.9
-Django 3.2.3
-djangorestframework 3.12.4
-Nginx
-gunicorn
-Docker
+![Python](https://img.shields.io/badge/python-3.9-blue?logo=python)
+![Django](https://img.shields.io/badge/DJANGO-3.2.3-blue?logo=django&logoColor=white)
+![djangorestframework](https://img.shields.io/badge/DJANGORESTFRAMEWORK-3.12.14-blue?logo=django&logoColor=white)
+![Nginx](https://img.shields.io/badge/NGINX-269539.svg?&style=flat&logo=nginx&logoColor=white)
+![Gunicorn](https://img.shields.io/badge/GUNICORN-blue?logo=gunicorn&logoColor=green)
+![Docker](https://img.shields.io/badge/DOCKER-2496ED.svg?&style=flat&logo=docker&logoColor=white)
 
 ## Описание работы:
 В проекте "Продуктовый помощник" любители вкусно готовить могут публиковать рецепты, добавлять чужие рецепты в избранное и подписываться на публикации других авторов. Пользователям сайта также будет доступен сервис «Список покупок». Он позволит создавать список продуктов, которые нужно купить для приготовления выбранных блюд.
