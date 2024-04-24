@@ -1,14 +1,8 @@
 
-# Foodgram
-Проект "Продуктовый помошник" (Foodgram) — сайт с рецептами.
+# Grocery helper
+Проект "Продуктовый помошник" — сайт с рецептами.
 
 ## Для проверки:
-
-https://foodgramzebra.zapto.org/
-Суперпользователь:
-zebra9999@rambler.ru
-prazdnik9999
-
 
 ## Технологии:
 Python 3.9
@@ -24,7 +18,7 @@ Docker
 ## Установка проекта
 - Сделайте fork репозитория, затем клонируйте его:
 ```
-git clone https://github.com/ZebraHr/foodgram-project-react
+git clone https://github.com/ZebraHr/grocery_helper
 ```
 - Для адаптации проекта на своем удаленном сервере добавьте секреты в GitHub Actions:
 ```
@@ -97,5 +91,4 @@ sudo certbot --nginx
 ### Автор
 Анна Победоносцева
 
-GitHub:
-(https://github.com/ZebraHr)
+[GitHub](https://github.com/ZebraHr)
